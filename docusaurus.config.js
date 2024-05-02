@@ -13,14 +13,14 @@ const config = {
   favicon: 'img/rb-profile-2021.ico',
 
   // Set the production url of your site here
-  url: 'https://roybailey.biz',
+  url: 'https://roybailey.github.io',
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
-  baseUrl: '/',
+  baseUrl: '/www.roybailey.biz/',
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
-  organizationName: 'Roy Bailey', // Usually your GitHub org/user name.
+  organizationName: 'roybailey', // Usually your GitHub org/user name.
   projectName: 'www.roybailey.biz', // Usually your repo name.
 
   onBrokenLinks: 'throw',

@@ -27,5 +27,5 @@ This command generates static content into the `build` directory and can be serv
 ### Deployment
 
 ```
-git subtree push --prefix build origin gh-pages
+USE_SSH=true npm run deploy
 ```
