@@ -1,8 +1,8 @@
 # Dependencies
 /node_modules
 
-# Production (needed for serving from gh-pages)
-# /build
+# Production
+/build
 
 # Generated files
 .docusaurus
