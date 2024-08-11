@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 /**
  * Any CSS included here will be global. The classic template
  * bundles Infima by default. Infima is a CSS framework designed to
@@ -6,26 +10,37 @@
 
 /* You can override the default Infima variables here. */
 :root {
-  --ifm-color-primary: #2e8555;
-  --ifm-color-primary-dark: #29784c;
-  --ifm-color-primary-darker: #277148;
-  --ifm-color-primary-darkest: #205d3b;
-  --ifm-color-primary-light: #33925d;
-  --ifm-color-primary-lighter: #359962;
-  --ifm-color-primary-lightest: #3cad6e;
+  --darkblue-1: #ced6e6;
+  --darkblue-2: #a4b2cd;
+  --darkblue-3: #8192b4;
+  --darkblue-4: #65769b;
+  --darkblue-5: #4e5e82;
+  --darkblue-6: #3a4969;
+  --darkblue-7: #2a3650;
+  --darkblue-8: #1c2437;
+  --darkblue-9: #0f131e;
+  --darkblue-10: #020305;
+
+  --ifm-color-primary: var(--darkblue-7);
+  --ifm-color-primary-dark: var(--darkblue-8);
+  --ifm-color-primary-darker: var(--darkblue-9);
+  --ifm-color-primary-darkest: var(--darkblue-10);
+  --ifm-color-primary-light: var(--darkblue-6);
+  --ifm-color-primary-lighter: var(--darkblue-5);
+  --ifm-color-primary-lightest: var(--darkblue-4);
   --ifm-code-font-size: 95%;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
 }
 
 /* For readability concerns, you should choose a lighter palette in dark mode. */
 [data-theme='dark'] {
-  --ifm-color-primary: #25c2a0;
-  --ifm-color-primary-dark: #21af90;
-  --ifm-color-primary-darker: #1fa588;
-  --ifm-color-primary-darkest: #1a8870;
-  --ifm-color-primary-light: #29d5b0;
-  --ifm-color-primary-lighter: #32d8b4;
-  --ifm-color-primary-lightest: #4fddbf;
+  --ifm-color-primary: var(--darkblue-7);
+  --ifm-color-primary-dark: var(--darkblue-8);
+  --ifm-color-primary-darker: var(--darkblue-9);
+  --ifm-color-primary-darkest: var(--darkblue-10);
+  --ifm-color-primary-light: var(--darkblue-6);
+  --ifm-color-primary-lighter: var(--darkblue-5);
+  --ifm-color-primary-lightest: var(--darkblue-4);
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
 }
 
@@ -33,18 +48,10 @@ body, h1, h2, h3, h4, h5, h6 {
   font-family: 'Titillium', sans-serif;
 }
 
-.navbar {
-  display: none;
-  background-color: #303846;
-  padding: 20px 0 20px 0;
+a {
+  color: var(--ifm-color-primary);
 }
 
-.navbar__brand {
-  margin: auto;
-}
-
-.footer {
-  display: none;
-  background-color: #303846;
-  padding: 20px 0 20px 0;
+a:hover {
+  color: var(--ifm-color-primary);
 }

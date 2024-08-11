@@ -5,6 +5,7 @@
 // See: https://docusaurus.io/docs/api/docusaurus-config
 
 import {themes as prismThemes} from 'prism-react-renderer';
+import tailwindPlugin from "./plugins/tailwind-config.cjs";
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
@@ -53,11 +54,32 @@ const config = {
     ],
   ],
 
+  scripts: [
+    // jQuery (necessary for Bootstrap's JavaScript plugins)
+    {
+      src: "https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js",
+      async: false,
+    },
+    {
+      src: 'https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.min.js',
+      async: false,
+    },
+    {
+      src: "https://cdn.jsdelivr.net/npm/react-bootstrap@next/dist/react-bootstrap.min.js",
+      async: false,
+    },
+    {
+      src: "https://cdn.jsdelivr.net/npm/semantic-ui-react/dist/umd/semantic-ui-react.min.js",
+      async: false,
+    },
+  ],
   stylesheets: [
     'https://fonts.cdnfonts.com/css/titillium',
     'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css',
-    // 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css',
+    'https://cdn.jsdelivr.net/npm/semantic-ui@2/dist/semantic.min.css',
+    'https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css',
   ],
+
   themeConfig:
   /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
       ({
@@ -84,7 +106,10 @@ const config = {
         },
       }),
 
-  plugins: ['docusaurus-plugin-sass'],
+  plugins: [
+      'docusaurus-plugin-sass',
+      tailwindPlugin
+  ],
 };
 
 export default config;
