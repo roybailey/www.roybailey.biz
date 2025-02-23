@@ -1,31 +1,50 @@
 # www.roybailey.biz
 
-This website is built using [Docusaurus](https://docusaurus.io/), a modern static website generator.
+This website is built using [Astro](https://docs.astro.build), a modern static website generator.
 
-### Installation
+## Users Guide
 
-```
-npm install
-```
+* Visit deployed website at [roybailey.biz](https://roybailey.biz)
 
-### Local Development
+## Developers Guide
 
-```
-npm start
-```
-
-This command starts a local development server and opens up a browser window. Most changes are reflected live without having to restart the server.
-
-### Build
-
-```
-npm run build
-```
-
-This command generates static content into the `build` directory and can be served using any static contents hosting service.
+* `npm install`
+* `npm start` to run locally on port `3061`
 
 ### Deployment
 
+* see [GitHub Deployment Action](./.github/workflows/deploy.yml)
+* see [Astro Deploy to GitHub Pages](https://docs.astro.build/en/guides/deploy/github/)
+
+
+## 🚀 Project Structure
+
+Inside of your Astro project, you'll see the following folders and files:
+
+```text
+/
+├── public/
+│   └── favicon.svg
+├── src/
+│   ├── layouts/
+│   │   └── Layout.astro
+│   └── pages/
+│       └── index.astro
+└── package.json
 ```
-USE_SSH=true npm run deploy
-```
+
+To learn more about the folder structure of an Astro project, refer to [our guide on project structure](https://docs.astro.build/en/basics/project-structure/).
+
+## 🧞 Commands
+
+All commands are run from the root of the project, from a terminal:
+
+| Command                   | Action                                           |
+| :------------------------ | :----------------------------------------------- |
+| `npm install`             | Installs dependencies                            |
+| `npm run dev`             | Starts local dev server at `localhost:4321`      |
+| `npm run build`           | Build your production site to `./dist/`          |
+| `npm run preview`         | Preview your build locally, before deploying     |
+| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
+| `npm run astro -- --help` | Get help using the Astro CLI                     |
+

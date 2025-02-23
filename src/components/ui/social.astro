@@ -1,0 +1,27 @@
+---
+interface Props {
+    href: string;
+    icon: string;
+    label: string;
+    size?: "md" | "lg";
+    block?: boolean;
+    style?: "outline" | "primary" | "inverted" | "muted";
+    class?: string;
+    [x: string]: any;
+}
+
+const {
+    href,
+    icon,
+    label,
+    size = "lg",
+    style = "primary",
+    class: className,
+    ...rest
+} = Astro.props;
+
+---
+
+<a href={href} target="_blank" className="text-current">
+    <li className="text-4xl"><i className={"fb fa " + icon} aria-label={label}></i></li>
+</a>

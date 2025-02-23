@@ -1,48 +1,37 @@
 {
-  "name": "www-roybailey-biz",
-  "version": "0.0.0",
-  "private": true,
+  "name": "roybailey.bizy",
+  "type": "module",
+  "version": "1.0.0",
   "scripts": {
-    "docusaurus": "docusaurus",
-    "start": "docusaurus start",
-    "build": "docusaurus build",
-    "swizzle": "docusaurus swizzle",
-    "deploy": "docusaurus deploy",
-    "clear": "docusaurus clear",
-    "serve": "docusaurus serve",
-    "write-translations": "docusaurus write-translations",
-    "write-heading-ids": "docusaurus write-heading-ids"
+    "dev": "astro dev --port 3061",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "start": "npm run dev"
   },
   "dependencies": {
-    "@docusaurus/core": "^3.4.0",
-    "@docusaurus/preset-classic": "^3.4.0",
-    "@mdx-js/react": "^3.0.0",
-    "clsx": "^2.0.0",
-    "docusaurus-plugin-sass": "^0.2.5",
-    "prism-react-renderer": "^2.3.0",
-    "react": "^18.0.0",
-    "react-dom": "^18.0.0"
+    "@astrojs/mdx": "^4.0.8",
+    "@astrojs/react": "^4.2.0",
+    "@astrojs/sitemap": "^3.2.1",
+    "@tailwindcss/vite": "^4.0.8",
+    "astro": "^5.3.0",
+    "astro-icon": "^1.1.5",
+    "astro-navbar": "^2.3.9",
+    "astro-seo": "^0.8.4",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "cmdk": "^1.0.0",
+    "cross-env": "^7.0.3",
+    "framer-motion": "^12.4.7",
+    "react": "^19.0.0",
+    "tailwind-merge": "^3.0.1",
+    "tailwindcss": "^4.0.8",
+    "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
-    "@docusaurus/module-type-aliases": "^3.4.0",
-    "@docusaurus/types": "^3.4.0",
-    "autoprefixer": "^10.4.20",
-    "postcss": "^8.4.41",
-    "tailwindcss": "^3.4.9"
-  },
-  "browserslist": {
-    "production": [
-      ">0.5%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 3 chrome version",
-      "last 3 firefox version",
-      "last 5 safari version"
-    ]
-  },
-  "engines": {
-    "node": ">=18.0"
+    "@iconify-json/fa": "^1.2.1",
+    "@iconify-json/lucide": "^1.2.26",
+    "@iconify-json/svg-spinners": "^1.2.2",
+    "@types/node": "^22.13.5"
   }
 }
