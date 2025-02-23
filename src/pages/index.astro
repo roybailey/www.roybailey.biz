@@ -1,11 +1,14 @@
 ---
 import Layout from '@/layouts/Layout.astro';
 import SocialItem from '@/components/ui/social.astro';
+import React from "react";
 ---
 
 <Layout>
 	<div class="relative text-gray-800 bg-gray-50">
-		<section class="px-10 mt-10">
+		<div class="h-10">
+		</div>
+		<section class="px-10">
 
 			<div class="w-full h-full bg-gray-100 px-2 py-2">
 				<div class="relative mt-16 mb-32 max-w-lg mx-auto mt-24">
@@ -30,7 +33,7 @@ import SocialItem from '@/components/ui/social.astro';
 								<li>Front End Developer</li>
 								<li>API Developer</li>
 							</ul>
-							<p class="text-center">
+							<div class="text-center">
 							<ul class="list-none flex gap-4 text-center text-gray-600 text-base pt-3 px-3 font-normal">
 								<SocialItem link="https://www.linkedin.com/in/roybailey"
 											icon='fa-linkedin-square'
@@ -42,11 +45,11 @@ import SocialItem from '@/components/ui/social.astro';
 											icon='fa-twitter-square'
 											label="Twitter Link"/>
 							</ul>
-							</p>
-							<p class="text-center text-base px-3 pb-4 font-normal flex flex-col gap-2">
+							</div>
+							<div class="text-center text-base px-3 pb-4 font-normal flex flex-col gap-2">
 							<div class="text-sm md:text-base text-gray-400 italic font-sans">Available for fractal work through my company...</div>
 							<a href="https://odinium.com" class="font-bold text-current text-lg md:text-2xl underline">Odinium Ltd</a>
-							</p>
+							</div>
 						</div>
 					</div>
 
@@ -57,4 +60,4 @@ import SocialItem from '@/components/ui/social.astro';
 		<div class="h-10">
 		</div>
 	</div>
-<Layout>
+</Layout>
