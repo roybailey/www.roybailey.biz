@@ -1,0 +1,132 @@
+---
+import Layout from '@/layouts/ResumeLayout.astro';
+import Section from "@/components/Section.astro";
+import Button from "@/components/ui/button.astro";
+
+import { getCollection, getEntry } from 'astro:content';
+import {Icon} from "astro-icon/components";
+
+const skillCategories = [
+    {
+        title: "Front End",
+        skills: "Javascript,Typescript",
+    },
+    {
+        title: "Server Side",
+        skills: "",
+    },
+    {
+        title: "Messaging",
+        skills: "",
+    },
+    {
+        title: "Databases",
+        skills: "",
+    },
+    {
+        title: "Testing",
+        skills: "",
+    },
+    {
+        title: "Cloud/DevOps",
+        skills: "",
+    },
+]
+
+const resume = await getEntry('resumes', 'roybailey')
+const employmentHistory = await getCollection('employmentHistory');
+employmentHistory.sort((a, b) => new Date(b.data.startDate).getTime() - new Date(a.data.startDate).getTime());
+employmentHistory.forEach(job => {
+    job.data.roles?.sort((a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime())
+})
+console.log("SKILLS")
+interface Skills {
+    skill: string,
+    category: string,
+    years: number,
+}
+const skills: Skills[] = []
+employmentHistory?.forEach((job)=> {
+    job.data.skills?.split(',')
+        .map(skill=> skill.trim())
+        .forEach(skill => {
+            let category = skillCategories.filter(category => {
+                let categorySkills = category.skills?.split(',').map(categorySkill => categorySkill.trim().toLowerCase())
+                //console.log(`${skill}=${JSON.stringify(categorySkills)}`);
+                let match = categorySkills.indexOf(skill.toLowerCase()) >= 0
+                return match
+            });
+            //console.log(`${skill}=${JSON.stringify(category)}`);
+            skills.push({skill: skill, category: category[0]?.title, years: 0})
+        })
+})
+console.log(skills);
+
+---
+
+<Layout>
+
+    <Section title={resume.data.tagline}>
+    <div class="text-2xl">{resume.data.summary}</div>
+    </Section>
+
+    <Section title="Engineering Leadership">
+        {resume.data.leadership.map((entry, index) => (
+            <div class="flex flex-row justify-between">
+                <div class="">{entry.title}</div>
+                <div class="">{entry.summary}</div>
+            </div>
+        ))}
+    </Section>
+    <Section title="Technical Experience">
+        {skillCategories.map((category) => (
+            <div class="flex flex-row justify-between">
+                <div class="">{category.title}</div>
+                <div class="flex flex-row gap-1">{
+                    skills
+                        .filter((skill) => skill.category === category.title)
+                        .map((skill) => (
+                            <div class="bg-red-200">{skill.skill}</div>
+                        ))
+                }
+                </div>
+            </div>
+        ))}
+    </Section>
+    <Section title="Financial Services Experience">
+        {resume.data.business.map((entry, index) => (
+                <div class="flex flex-row justify-between">
+                    <div class="">{entry.title}</div>
+                    <div class="">{entry.summary}</div>
+                </div>
+        ))}
+    </Section>
+    <div class="break-after-page"></div>
+    <Section title="Employment History">
+        <ul>
+            {employmentHistory.map((job) => (
+                <li class=`m-4 shadow py-4 flex flex-col items-center ${job.data.pageBreakBefore? " break-before-page" : ""}  ${job.data.pageBreakAfter? " break-after-page" : ""}` key={job.id}>
+                    <h2>{job.data.position} at {job.data.company}</h2>
+                    <p>{job.data.startDate} - {job.data.endDate || "Present"}</p>
+                    {job.data.summary && (
+                        <p>{job.data.summary}</p>
+                    )}
+                    {job.data.roles && job.data.roles.map((role, index) => (
+                        <div class="m-4 shadow py-4 flex flex-col items-center" key={index}>
+                            <h2>{role.title}</h2>
+                            <p>{role.startDate} - {role.endDate || "Present"}</p>
+                            <p>{role.summary}</p>
+                        </div>
+                    ))}
+                </li>
+            ))}
+        </ul>
+    </Section>
+
+    <Section title="UNIVERSITY OF LIFE">
+        <div>
+            My passion for software coding started at the age of 9. Entering an Apprenticeship straight after high school I was quickly talent spotted and poached by a local independent software house.  My commercial success since then speaks for itself.  In fact, not being able to rely on a Computer Science Degree has given me extra drive to constantly learn and challenge myself, and that diversity has given my employers the benefit of my broader commercial strengths.
+        </div>
+    </Section>
+
+</Layout>

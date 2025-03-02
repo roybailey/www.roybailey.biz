@@ -1,4 +1,6 @@
 ---
+import { Icon } from 'astro-icon/components'
+
 interface Props {
     href: string;
     icon: string;
@@ -14,7 +16,7 @@ const {
     href,
     icon,
     label,
-    size = "lg",
+    size = "current",
     style = "primary",
     class: className,
     ...rest
@@ -22,6 +24,9 @@ const {
 
 ---
 
-<a href={href} target="_blank" className="text-current">
-    <li className="text-4xl"><i className={"fb fa " + icon} aria-label={label}></i></li>
+<a href={href} target="_blank" class="text-current">
+    <div class=`flex flex-col items-center sm:flex-row gap-x-1 ${size === "lg"? "text-4xl": "text-current"}`>
+        <Icon name=`lucide:${icon}` aria-label={label} />
+        <span>{href}</span>
+    </div>
 </a>

@@ -1,10 +1,38 @@
 ---
 import '../assets/css/global.css'
+import {SEO} from "astro-seo";
 ---
 
 <!doctype html>
 <html lang="en">
 	<head>
+		<SEO
+			title="Roy Bailey Software Engineer and Software Engineering Manager"
+			description="A heavily optimized description full of well-researched keywords."
+			openGraph={{
+				basic: {
+					title: "Roy Bailey Software Engineer and Software Engineering Manager",
+					type: "A type.",
+					image: "https://roybailey.biz/img/rb-profile-2021.png",
+				}
+			}}
+			twitter={{
+				creator: "@roybaileybiz"
+			}}
+			extend={{
+				// extending the default link tags
+		        link: [{ rel: "icon", href: "/favicon.ico" }],
+				// extending the default meta tags
+				meta: [
+					{
+						name: "twitter:image",
+						content: "https://roybailey.biz/img/rb-profile-2021.png",
+					},
+					{ name: "twitter:title", content: "Roy Bailey" },
+					{ name: "twitter:description", content: "Software Engineer and Software Engineering Manager" },
+				],
+			}}
+		/>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width" />
 		<link rel="icon" type="image/x-icon" href="/favicon.ico" />

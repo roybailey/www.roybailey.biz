@@ -1,0 +1,22 @@
+---
+import SocialItem from "@/components/ui/social.astro";
+const year = new Date().getFullYear()
+---
+
+
+<div class="w-full pt-2 pb-20 mt-16 border-t">
+	<div class="mx-auto px-2">
+		<div class="flex flex-col md:flex-row gap-1 items-start justify-center text-right text-sm italic">
+			<SocialItem href="https://www.linkedin.com/in/roybailey"
+						icon='linkedin'
+						label="LinkedIn Link"/>
+			<SocialItem href="https://github.com/roybailey"
+						icon='github'
+						label="GitHub Link"/>
+			<SocialItem href="http://twitter.com/roybaileybiz"
+						icon='twitter'
+						label="X/Twitter Link"/>
+		</div>
+	</div>
+</div>
+

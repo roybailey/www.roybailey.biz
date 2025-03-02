@@ -1,0 +1,21 @@
+---
+import { Icon } from 'astro-icon/components'
+
+interface Props {
+    href: string | undefined;
+    title: string;
+}
+
+const {
+    href,
+    title,
+    ...rest
+} = Astro.props;
+
+---
+
+<div class="p-4 break-before-avoid">
+    <h1 class="text-4xl text-center">{title}</h1>
+    <hr/>
+    <slot />
+</div>
