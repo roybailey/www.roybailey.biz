@@ -1,35 +1,51 @@
 ---
 import Layout from '@/layouts/ResumeLayout.astro';
 import Section from "@/components/Section.astro";
-import Button from "@/components/ui/button.astro";
 
 import { getCollection, getEntry } from 'astro:content';
-import {Icon} from "astro-icon/components";
+
+function monthsBetween(startDate, endDate) {
+    return (endDate.getFullYear() - startDate.getFullYear()) * 12 + (endDate.getMonth() - startDate.getMonth());
+}
+function mergeByTitle(array) {
+    return Object.values(
+        array.reduce((result, item) => {
+            // If we've seen this title before, add to its count
+            if (result.find(entry => entry.skill === item.skill)) {
+                result.find(entry => entry.skill === item.skill).years += item.years;
+            } else {
+                // Otherwise create a new entry (using a new object to avoid modifying the original)
+                result.push({ ...item });
+            }
+            return result;
+        }, [])
+    ).sort((a,b) => a.skill.localeCompare(b.skill));
+}
 
 const skillCategories = [
     {
         title: "Front End",
-        skills: "Javascript,Typescript",
+        skills: "javascript,typescript,react,astro",
     },
     {
         title: "Server Side",
-        skills: "",
+        skills: "springboot,java,kotlin,apis,low-latency,micro-services,j2ee,restful",
     },
     {
         title: "Messaging",
-        skills: "",
+        skills: "jms,tibco,kafka",
     },
     {
         title: "Databases",
-        skills: "",
+        skills: "postgres,neo4j,oracle,azure sql",
     },
     {
         title: "Testing",
-        skills: "",
+        skills: "playwright",
     },
     {
         title: "Cloud/DevOps",
-        skills: "",
+        skills: "kubernetes,k8,aks,oracle cloud,aws,docker,ci/cd,azure",
     },
 ]
 
@@ -44,9 +60,11 @@ interface Skills {
     skill: string,
     category: string,
     years: number,
+    months: number,
 }
 const skills: Skills[] = []
 employmentHistory?.forEach((job)=> {
+    let jobDuration = monthsBetween(new Date(job.data.startDate), job.data.endDate? new Date(job.data.endDate) : new Date())
     job.data.skills?.split(',')
         .map(skill=> skill.trim())
         .forEach(skill => {
@@ -56,12 +74,19 @@ employmentHistory?.forEach((job)=> {
                 let match = categorySkills.indexOf(skill.toLowerCase()) >= 0
                 return match
             });
-            //console.log(`${skill}=${JSON.stringify(category)}`);
-            skills.push({skill: skill, category: category[0]?.title, years: 0})
+            skills.push({skill: skill, category: category[0]?.title, years: 0, months: jobDuration})
         })
 })
-console.log(skills);
-
+let skillSummary = mergeByTitle(skills);
+skillSummary.forEach(skill => {
+    let years = Math.trunc(skill.months / 12)
+    let months = skill.months - (years*12)
+    //console.log(JSON.stringify(skill)+`  ${years}yr ${months}m  ` );
+    skill.years = years
+    skill.months = months
+    skill.category = (skill.category) ? skill.category : 'other'
+    console.log(JSON.stringify(skill))
+})
 ---
 
 <Layout>
@@ -83,10 +108,10 @@ console.log(skills);
             <div class="flex flex-row justify-between">
                 <div class="">{category.title}</div>
                 <div class="flex flex-row gap-1">{
-                    skills
+                    skillSummary
                         .filter((skill) => skill.category === category.title)
                         .map((skill) => (
-                            <div class="bg-red-200">{skill.skill}</div>
+                            <div class="bg-slate-500 px-2 my-1 rounded text-background dark:text-background dark:bg-foreground">{skill.skill}</div>
                         ))
                 }
                 </div>
