@@ -18,6 +18,7 @@ const resumes = defineCollection({
 			title: z.string(),
 			summary: z.string(),
 		})),
+		educationSummary: z.string(),
 	})
 });
 
@@ -26,11 +27,11 @@ const employmentHistory = defineCollection({
 	loader: glob({ pattern: "**/*.(md|mdx)", base: "./src/data/resume/employment" }),
 	schema: z.object({
 		company: z.string(),
-		position: z.string(),
+		companyType: z.string(),
+		employmentType: z.string(),
+		employmentRank: z.string(),
 		startDate: z.string(), // Store as YYYY-MM-DD
 		endDate: z.string().optional(), // Optional for current jobs
-		skills: z.string().optional(),
-		summary: z.string().optional(), // Options for multiple roles
 		roles: z.array(z.object({
 			title: z.string(),
 			startDate: z.string(),

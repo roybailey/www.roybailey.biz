@@ -1,0 +1,48 @@
+---
+import { Accordion, AccordionItem } from 'free-astro-components'
+// Access passed-in component props, like `<X title="Hello, World" />`
+const { roles } = Astro.props;
+---
+
+<Accordion variant='shadow' class="w-full">
+	{roles && roles.map((role, index) => (
+		<AccordionItem title={role.title}>
+			<div class="min-h-20 flex flex-row items-center justify-between">
+
+				<div class="flex-shrink-0">
+					LEFT
+				</div>
+				<div class="flex-1 flex items-center px-8 hidden lg:inline">
+					MIDDLE
+				</div>
+				<div class="flex-shrink-0 flex flex-row items-center justify-between gap-4 pl-4">
+					{role.startDate} - {role.endDate || "Present"}
+				</div>
+
+			</div>
+			<p>{role.summary}</p>
+		</AccordionItem>
+	))}
+</Accordion>
+
+<script>
+    function updateAttributes() {
+        const print = window.matchMedia("print").matches
+        console.log(`print=${print}`)
+        const elements = document.getElementsByTagName("details");
+        for(const element of elements) {
+            console.log(`assigning open=${print}`)
+            if(print) {
+                element.setAttribute("open", "");
+            } else {
+                element.removeAttribute("open");
+            }
+        }
+    }
+
+    // Listen for changes in media type
+    window.matchMedia("print").addEventListener("change", updateAttributes);
+
+    // Set on page load
+    updateAttributes();
+</script>

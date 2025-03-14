@@ -2,6 +2,7 @@
 import { getEntry } from 'astro:content';
 import Logo from "@/components/ProfileImage.astro";
 import ThemeSelect from "@/layouts/ThemeSelect.astro";
+import PrintSelect from "@/layouts/PrintSelect.astro";
 const cv = await getEntry('resumes','roybailey');
 ---
 
@@ -9,7 +10,7 @@ const cv = await getEntry('resumes','roybailey');
 	<div class="min-h-20 flex flex-row items-center justify-between">
 
 		<div class="flex-shrink-0">
-			<div class="flex flex-col md:flex-row items-center justify-center text-center h-screen-half">
+			<div class="flex flex-col sm:flex-row items-center justify-center text-center h-screen-half">
 				<img
 					class="object-cover w-25 h-25 rounded-full my-5 ring-2 ring-gray-500/50 ring-offset-[10px]"
 					src="/img/rb-profile-2021.png"
@@ -24,12 +25,15 @@ const cv = await getEntry('resumes','roybailey');
 		</div>
 		<div class="flex-1 flex items-end px-8 hidden lg:inline">
 			<!-- nothing in center of header -->
+			(last updated {cv.data.lastUpdated})
 		</div>
 		<div class="flex-shrink-0 flex flex-row items-center justify-between gap-4 pl-4">
 			<div class="flex gap-4 flex-col items-end">
-				<div class="flex flex-row items-center italic font-thin">(last updated {cv.data.lastUpdated})<ThemeSelect /></div>
-				<div>{cv.data.phone}</div>
-				<div>{cv.data.email}</div>
+				<div class="flex flex-row items-center italic font-thin">(last updated {cv.data.lastUpdated})</div>
+				<div class="print:hidden"><ThemeSelect /></div>
+				<div class="print:hidden"><PrintSelect /></div>
+				<div class="hidden print:inline">{cv.data.phone}</div>
+				<div class="hidden print:inline">{cv.data.email}</div>
 			</div>
 		</div>
 

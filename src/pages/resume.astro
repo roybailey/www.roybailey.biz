@@ -1,18 +1,51 @@
 ---
 import Layout from '@/layouts/ResumeLayout.astro';
 import Section from "@/components/Section.astro";
+import Employment from "@/components/Employment.astro";
 
 import { getCollection, getEntry } from 'astro:content';
 
-function monthsBetween(startDate, endDate) {
-    return (endDate.getFullYear() - startDate.getFullYear()) * 12 + (endDate.getMonth() - startDate.getMonth());
+function getDuration(start:string, end:string) {
+    let startDate = new Date(start);
+    let endDate = ((end)? new Date(end) : new Date());
+    let months = (endDate.getFullYear() - startDate.getFullYear()) * 12 + (endDate.getMonth() - startDate.getMonth());
+    let years = Math.trunc(months / 12)
+    return {
+        years: years,
+        months: months - (years*12)
+    }
 }
+
+function addDuration(duration: { years: number, months: number }, start:string, end:string) {
+    let additional = getDuration(start, end)
+    let months = (duration.years*12)+duration+months+(additional.years*12)+additional.months;
+    let years = Math.trunc(months / 12)
+    return {
+        years: years,
+        months: months - (years*12)
+    }
+}
+
+function renderDuration(duration: { years: number, months: number }): string {
+    let yearsString = (duration.years > 1) ? `${duration.years} years` :
+        (duration.years === 1) ? `${duration.years} year` : "";
+    let monthsString = (duration.months > 1) ? `${duration.months} months` :
+        (duration.months === 1) ? `${duration.months} month` : "";
+    return `${yearsString} ${monthsString}`
+}
+
+function renderStartEndDates(startDate:string, endDate:string): string {
+    return `${startDate.substring(0,7)} to ${endDate? endDate.substring(0,7) : "Present"}`
+}
+
 function mergeByTitle(array) {
     return Object.values(
         array.reduce((result, item) => {
             // If we've seen this title before, add to its count
             if (result.find(entry => entry.skill === item.skill)) {
-                result.find(entry => entry.skill === item.skill).years += item.years;
+                let entry = result.find(entry => entry.skill === item.skill)
+                console.log(`Adding to entry ${entry.skill} ${entry.months}+${item.months}`)
+                entry.months += item.months;
             } else {
                 // Otherwise create a new entry (using a new object to avoid modifying the original)
                 result.push({ ...item });
@@ -29,23 +62,23 @@ const skillCategories = [
     },
     {
         title: "Server Side",
-        skills: "springboot,java,kotlin,apis,low-latency,micro-services,j2ee,restful",
-    },
-    {
-        title: "Messaging",
-        skills: "jms,tibco,kafka",
+        skills: "springboot,java,kotlin,low-latency,restful",
     },
     {
         title: "Databases",
-        skills: "postgres,neo4j,oracle,azure sql",
+        skills: "postgres,neo4j,oracle,cassandra,redis",
+    },
+    {
+        title: "Cloud/DevOps",
+        skills: "kubernetes,k8,aks,aws,docker,ci/cd,azure",
+    },
+    {
+        title: "Messaging",
+        skills: "jms,kafka",
     },
     {
         title: "Testing",
         skills: "playwright",
-    },
-    {
-        title: "Cloud/DevOps",
-        skills: "kubernetes,k8,aks,oracle cloud,aws,docker,ci/cd,azure",
     },
 ]
 
@@ -64,7 +97,7 @@ interface Skills {
 }
 const skills: Skills[] = []
 employmentHistory?.forEach((job)=> {
-    let jobDuration = monthsBetween(new Date(job.data.startDate), job.data.endDate? new Date(job.data.endDate) : new Date())
+    let jobDuration = getDuration(job.data.startDate, job.data.endDate)
     job.data.skills?.split(',')
         .map(skill=> skill.trim())
         .forEach(skill => {
@@ -76,6 +109,20 @@ employmentHistory?.forEach((job)=> {
             });
             skills.push({skill: skill, category: category[0]?.title, years: 0, months: jobDuration})
         })
+    job.data.roles?.forEach(role => {
+        let roleDuration = getDuration(role.startDate, role.endDate)
+        role.skills?.split(',')
+        .map(skill=> skill.trim())
+        .forEach(skill => {
+            let category = skillCategories.filter(category => {
+                let categorySkills = category.skills?.split(',').map(categorySkill => categorySkill.trim().toLowerCase())
+                //console.log(`${skill}=${JSON.stringify(categorySkills)}`);
+                let match = categorySkills.indexOf(skill.toLowerCase()) >= 0
+                return match
+            });
+            skills.push({skill: skill, category: category[0]?.title, years: 0, months: roleDuration})
+        })
+    })
 })
 let skillSummary = mergeByTitle(skills);
 skillSummary.forEach(skill => {
@@ -91,9 +138,8 @@ skillSummary.forEach(skill => {
 
 <Layout>
 
-    <Section title={resume.data.tagline}>
-    <div class="text-2xl">{resume.data.summary}</div>
-    </Section>
+    <div class="text-4xl text-center">{resume.data.tagline}</div>
+    <div class="px-10 text-xl italic">"{resume.data.summary}"</div>
 
     <Section title="Engineering Leadership">
         {resume.data.leadership.map((entry, index) => (
@@ -111,7 +157,7 @@ skillSummary.forEach(skill => {
                     skillSummary
                         .filter((skill) => skill.category === category.title)
                         .map((skill) => (
-                            <div class="bg-slate-500 px-2 my-1 rounded text-background dark:text-background dark:bg-foreground">{skill.skill}</div>
+                            <div class="bg-slate-500 px-2 mt-1 rounded text-background dark:text-background dark:bg-foreground">{skill.skill} <span class="text-xs">({(skill.years > 10)? "10+" : (skill.years >= 5)? "5+" : (skill.years >= 2)? "2+" : "< 2"})</span></div>
                         ))
                 }
                 </div>
@@ -131,27 +177,27 @@ skillSummary.forEach(skill => {
         <ul>
             {employmentHistory.map((job) => (
                 <li class=`m-4 shadow py-4 flex flex-col items-center ${job.data.pageBreakBefore? " break-before-page" : ""}  ${job.data.pageBreakAfter? " break-after-page" : ""}` key={job.id}>
-                    <h2>{job.data.position} at {job.data.company}</h2>
-                    <p>{job.data.startDate} - {job.data.endDate || "Present"}</p>
-                    {job.data.summary && (
-                        <p>{job.data.summary}</p>
-                    )}
-                    {job.data.roles && job.data.roles.map((role, index) => (
-                        <div class="m-4 shadow py-4 flex flex-col items-center" key={index}>
-                            <h2>{role.title}</h2>
-                            <p>{role.startDate} - {role.endDate || "Present"}</p>
-                            <p>{role.summary}</p>
+                    <div class="w-full min-h-20 flex flex-row items-center justify-between">
+                        <div class="flex-shrink-0">
+                            <div class=" flex flex-col items-start">
+                                <h2 class="font-semibold text-xl">{job.data.company}</h2>
+                                <h3 class="font-thin text-sm">({job.data.employmentType} - {job.data.employmentRank})</h3>
+                            </div>
                         </div>
-                    ))}
+                        <div class="flex-shrink-0 flex flex-row items-center justify-between gap-4 pl-4">
+                            <div class=" flex flex-col items-end">
+                                <h2 class="font-semibold">{renderDuration(getDuration(job.data.startDate, job.data.endDate))}</h2>
+                                <h3 class="font-thin text-sm">{renderStartEndDates(job.data.startDate, job.data.endDate)}</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <Employment roles={job.data.roles} />
                 </li>
             ))}
         </ul>
     </Section>
 
-    <Section title="UNIVERSITY OF LIFE">
-        <div>
-            My passion for software coding started at the age of 9. Entering an Apprenticeship straight after high school I was quickly talent spotted and poached by a local independent software house.  My commercial success since then speaks for itself.  In fact, not being able to rely on a Computer Science Degree has given me extra drive to constantly learn and challenge myself, and that diversity has given my employers the benefit of my broader commercial strengths.
-        </div>
-    </Section>
+    <div class="text-4xl text-center">EDUCATION</div>
+    <div class="px-10 text-xl italic">"{resume.data.educationSummary}"</div>
 
 </Layout>
