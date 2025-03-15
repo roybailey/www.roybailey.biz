@@ -16,7 +16,9 @@ const cv = await getEntry('resumes','roybailey');
 					src="/img/rb-profile-2021.png"
 					alt={cv.data.name}/>
 				<div class="flex flex-col">
-					<h1 class="text-5xl md:text-7xl lg:text-7xl">Roy Bailey</h1>
+					<h1 class="text-5xl md:text-7xl lg:text-7xl hover:text-blue-800">
+						<a href="/">Roy Bailey</a>
+					</h1>
 					<p class="text-center text-gray-400 text-sm md:text-base pt-3 px-3 font-normal italic font-sans">
 						30 years experience Software Engineering...
 					</p>
@@ -25,7 +27,6 @@ const cv = await getEntry('resumes','roybailey');
 		</div>
 		<div class="flex-1 flex items-end px-8 hidden lg:inline">
 			<!-- nothing in center of header -->
-			(last updated {cv.data.lastUpdated})
 		</div>
 		<div class="flex-shrink-0 flex flex-row items-center justify-between gap-4 pl-4">
 			<div class="flex gap-4 flex-col items-end">
