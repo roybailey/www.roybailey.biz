@@ -1,5 +1,7 @@
 ---
-import { Icon } from 'astro-icon/components'
+import {
+    Twitter, Linkedin, Github
+} from 'lucide-astro'
 
 interface Props {
     href: string;
@@ -26,7 +28,7 @@ const {
 
 <a href={href} target="_blank" class="text-current">
     <div class=`flex flex-col items-center sm:flex-row gap-x-1 ${size === "lg"? "text-4xl": "text-current"}`>
-        <Icon name=`lucide:${icon}` aria-label={label} />
+        {(icon === "twitter")? (<Twitter />) : (icon === "linkedin")? (<Linkedin />) :(icon === "github")? <Github /> : ""}
         <span>{href}</span>
     </div>
 </a>
