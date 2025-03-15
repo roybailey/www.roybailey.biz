@@ -20,7 +20,14 @@ export default defineConfig({
     },
     integrations: [
         react(),
-        icon(),
+        icon({
+            include: {
+                // Include only three `lucide` icons in the bundle
+                lucide: ['fa-linkedin-square','fa-github-square','fa-twitter-square'],
+                // Include all `uis` icons
+                // uis: ['*']
+            }
+        }),
         mdx(),
     ],
 });
