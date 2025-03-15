@@ -19,6 +19,7 @@ const resumes = defineCollection({
 			summary: z.string(),
 		})),
 		educationSummary: z.string(),
+		personalInterests: z.string(),
 	})
 });
 
@@ -37,10 +38,16 @@ const employmentHistory = defineCollection({
 			startDate: z.string(),
 			endDate: z.string().optional(),
 			skills: z.string().optional(),
-			summary: z.string()
+			summary: z.string(),
+			// derived
+			duration: z.string().optional(),
+			period: z.string().optional(),
 		})).optional(),
 		pageBreakBefore: z.boolean().optional(),
 		pageBreakAfter: z.boolean().optional(),
+		// derived
+		duration: z.string().optional(),
+		period: z.string().optional(),
 	}),
 });
 

@@ -1,6 +1,7 @@
 ---
 import Layout from '@/layouts/Layout.astro';
 import { getCollection, getEntry } from 'astro:content';
+import {Accordion, AccordionItem} from "free-astro-components";
 
 // Get all entries from a collection.
 // Requires the name of the collection as an argument.
@@ -23,7 +24,13 @@ const employmentUBS20210201 = await getEntry('employmentHistory','2021-02-01-ubs
 
 <Layout>
 
-	<div class="bg-slate-300 m-4 p-4">
+	<Accordion variant='shadow' class="w-full">
+		<AccordionItem title="Accordion">
+			Something
+		</AccordionItem>
+	</Accordion>
+
+		<div class="bg-slate-300 m-4 p-4">
 		<h1>resumes ({resumes?.length})</h1>
 		<ul>
 			{resumes.map((cv) => (

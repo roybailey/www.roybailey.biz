@@ -1,29 +1,44 @@
 ---
 import { Accordion, AccordionItem } from 'free-astro-components'
 // Access passed-in component props, like `<X title="Hello, World" />`
-const { roles } = Astro.props;
+const { employment, roles } = Astro.props;
 ---
 
+<div class="w-full flex flex-row items-center justify-between">
+    <div class="flex-shrink-0">
+        <div class=" flex flex-col items-start">
+            <h2 class="font-semibold text-xl">{employment.company}</h2>
+            <h3 class="font-thin text-sm">({employment.employmentType} - {employment.employmentRank})</h3>
+        </div>
+    </div>
+    <div class="flex-shrink-0 flex flex-row items-center justify-between gap-4 pl-4">
+        <div class=" flex flex-col items-end">
+            <h2 class="font-semibold">{employment.duration}</h2>
+            <h3 class="font-thin text-sm">{employment.period}</h3>
+        </div>
+    </div>
+</div>
 <Accordion variant='shadow' class="w-full">
-	{roles && roles.map((role, index) => (
-		<AccordionItem title={role.title}>
-			<div class="min-h-20 flex flex-row items-center justify-between">
+    {roles && roles.map((role, index) => (
+            <AccordionItem title={role.title}>
+                <div class="flex flex-row items-center justify-between">
 
-				<div class="flex-shrink-0">
-					LEFT
-				</div>
-				<div class="flex-1 flex items-center px-8 hidden lg:inline">
-					MIDDLE
-				</div>
-				<div class="flex-shrink-0 flex flex-row items-center justify-between gap-4 pl-4">
-					{role.startDate} - {role.endDate || "Present"}
-				</div>
+                    <div class="flex-shrink-0 font-thin">
+                        {role.period}
+                    </div>
+                    <div class="flex-1 flex items-center px-8 hidden lg:inline">
+                        MIDDLE
+                    </div>
+                    <div class="flex-shrink-0 flex flex-row items-center justify-between gap-4 pl-4">
+                        {role.duration}
+                    </div>
 
-			</div>
-			<p>{role.summary}</p>
-		</AccordionItem>
-	))}
+                </div>
+                <p>{role.summary}</p>
+            </AccordionItem>
+    ))}
 </Accordion>
+
 
 <script>
     function updateAttributes() {

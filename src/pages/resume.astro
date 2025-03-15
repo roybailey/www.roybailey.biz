@@ -4,7 +4,13 @@ import Section from "@/components/Section.astro";
 import Employment from "@/components/Employment.astro";
 
 import { getCollection, getEntry } from 'astro:content';
+import Experience from "../components/Experience.astro";
+import {Accordion, AccordionItem} from "free-astro-components";
 
+// ------------------------------------------------------------
+// Date and render functions
+// ------------------------------------------------------------
+console.log("----- Date and render functions")
 function getDuration(start:string, end:string) {
     let startDate = new Date(start);
     let endDate = ((end)? new Date(end) : new Date());
@@ -18,8 +24,9 @@ function getDuration(start:string, end:string) {
 
 function addDuration(duration: { years: number, months: number }, start:string, end:string) {
     let additional = getDuration(start, end)
-    let months = (duration.years*12)+duration+months+(additional.years*12)+additional.months;
+    let months = (duration.years*12)+duration.months+(additional.years*12)+additional.months;
     let years = Math.trunc(months / 12)
+    //console.log(JSON.stringify(duration))
     return {
         years: years,
         months: months - (years*12)
@@ -38,166 +45,228 @@ function renderStartEndDates(startDate:string, endDate:string): string {
     return `${startDate.substring(0,7)} to ${endDate? endDate.substring(0,7) : "Present"}`
 }
 
-function mergeByTitle(array) {
-    return Object.values(
-        array.reduce((result, item) => {
-            // If we've seen this title before, add to its count
-            if (result.find(entry => entry.skill === item.skill)) {
-                let entry = result.find(entry => entry.skill === item.skill)
-                console.log(`Adding to entry ${entry.skill} ${entry.months}+${item.months}`)
-                entry.months += item.months;
-            } else {
-                // Otherwise create a new entry (using a new object to avoid modifying the original)
-                result.push({ ...item });
-            }
-            return result;
-        }, [])
-    ).sort((a,b) => a.skill.localeCompare(b.skill));
+function renderSkillDuration(years): string {
+    if(!years || years < 1)
+        return ""
+    return "("+((years > 10)? "10+" : (years >= 5)? "5+" : (years >= 2)? "2+" : "< 2")+")"
 }
 
+
+
+// ------------------------------------------------------------
+// Skill Categories
+// ------------------------------------------------------------
+console.log("==========================================")
+console.log("----- Skill Categories")
 const skillCategories = [
     {
         title: "Front End",
-        skills: "javascript,typescript,react,astro",
+        skills: ["javascript,typescript,react,astro"],
     },
     {
         title: "Server Side",
-        skills: "springboot,java,kotlin,low-latency,restful",
+        skills: ["springboot,java,kotlin,low-latency,restful"],
     },
     {
         title: "Databases",
-        skills: "postgres,neo4j,oracle,cassandra,redis",
+        skills: ["postgres,neo4j,oracle,cassandra,redis"],
     },
     {
         title: "Cloud/DevOps",
-        skills: "kubernetes,k8,aks,aws,docker,ci/cd,azure",
+        skills: ["kubernetes,aks,aws,docker,ci/cd,azure"],
     },
     {
         title: "Messaging",
-        skills: "jms,kafka",
+        skills: ["jms,kafka"],
     },
     {
         title: "Testing",
-        skills: "playwright",
+        skills: ["playwright"],
     },
 ]
+skillCategories.forEach(category => {
+    let listSkills:string[] = []
+    category.skills.map(skill =>
+        skill.split(',')
+            .map(categorySkill => categorySkill.trim().toLowerCase())
+            .forEach(skill => listSkills.push(skill))
+    )
+    category.skills = listSkills
+})
+console.log(JSON.stringify(skillCategories,null,2))
 
+
+
+// ------------------------------------------------------------
+// Resume loading
+// ------------------------------------------------------------
+console.log("==========================================")
+console.log("----- Resume Loading")
 const resume = await getEntry('resumes', 'roybailey')
 const employmentHistory = await getCollection('employmentHistory');
+// sort history into newest first
 employmentHistory.sort((a, b) => new Date(b.data.startDate).getTime() - new Date(a.data.startDate).getTime());
 employmentHistory.forEach(job => {
     job.data.roles?.sort((a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime())
 })
-console.log("SKILLS")
-interface Skills {
-    skill: string,
-    category: string,
-    years: number,
-    months: number,
-}
-const skills: Skills[] = []
-employmentHistory?.forEach((job)=> {
-    let jobDuration = getDuration(job.data.startDate, job.data.endDate)
-    job.data.skills?.split(',')
-        .map(skill=> skill.trim())
-        .forEach(skill => {
-            let category = skillCategories.filter(category => {
-                let categorySkills = category.skills?.split(',').map(categorySkill => categorySkill.trim().toLowerCase())
-                //console.log(`${skill}=${JSON.stringify(categorySkills)}`);
-                let match = categorySkills.indexOf(skill.toLowerCase()) >= 0
-                return match
-            });
-            skills.push({skill: skill, category: category[0]?.title, years: 0, months: jobDuration})
-        })
-    job.data.roles?.forEach(role => {
-        let roleDuration = getDuration(role.startDate, role.endDate)
-        role.skills?.split(',')
-        .map(skill=> skill.trim())
-        .forEach(skill => {
-            let category = skillCategories.filter(category => {
-                let categorySkills = category.skills?.split(',').map(categorySkill => categorySkill.trim().toLowerCase())
-                //console.log(`${skill}=${JSON.stringify(categorySkills)}`);
-                let match = categorySkills.indexOf(skill.toLowerCase()) >= 0
-                return match
-            });
-            skills.push({skill: skill, category: category[0]?.title, years: 0, months: roleDuration})
-        })
+employmentHistory.forEach(job => {
+    job.data.duration = renderDuration(getDuration(job.data.startDate, job.data.endDate))
+    job.data.period = renderStartEndDates(job.data.startDate, job.data.endDate)
+    job.data.roles.forEach(role => {
+        role.duration = renderDuration(getDuration(role.startDate, role.endDate))
+        role.period = renderStartEndDates(role.startDate, role.endDate)
     })
 })
-let skillSummary = mergeByTitle(skills);
-skillSummary.forEach(skill => {
-    let years = Math.trunc(skill.months / 12)
-    let months = skill.months - (years*12)
-    //console.log(JSON.stringify(skill)+`  ${years}yr ${months}m  ` );
-    skill.years = years
-    skill.months = months
-    skill.category = (skill.category) ? skill.category : 'other'
-    console.log(JSON.stringify(skill))
+
+
+
+// ------------------------------------------------------------
+// Resume Skills History
+// ------------------------------------------------------------
+console.log("==========================================")
+console.log("----- Resume Skills History")
+interface SkillExperience {
+    skill: string,
+    category: string,
+    company: string,
+    role: string,
+    startDate: string,
+    endDate: string,
+    duration: { years: number, months: number },
+}
+const skills: SkillExperience[] = []
+employmentHistory?.forEach((job)=> {
+    job.data.roles.forEach(role => {
+        let roleDuration = getDuration(role.startDate, role.endDate)
+        role.skills?.split(',')
+            .map(skill=> skill.trim().toLowerCase())
+            .forEach(skill => {
+                let category = skillCategories.filter(category => {
+                    let match = category.skills.indexOf(skill) >= 0
+                    return match
+                });
+                if (category.length > 0) {
+                    skills.push({
+                        skill: skill,
+                        category: category[0].title,
+                        company: job.data.company,
+                        role: role.title,
+                        startDate: role.startDate,
+                        endDate: role.endDate,
+                        duration: roleDuration
+                    })
+                }
+            })
+    })
 })
+skills.sort((a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime());
+console.log(JSON.stringify(skills,null,2))
+
+
+
+// ------------------------------------------------------------
+// Resume Skills Summary
+// ------------------------------------------------------------
+console.log("==========================================")
+console.log("----- Resume Skills Summary")
+// let springboot = skills
+//     .filter(skill=> skill.skill === "springboot")
+//     .reduce((acc, skill) => {
+//         return addDuration(acc, skill.startDate, skill.endDate)
+//     }, { years: 0, months: 0 });
+// console.log(JSON.stringify(springboot,null,2))
+console.log("==========================================")
+interface SkillSummary {
+    skill: string,
+    category: string,
+    lastUsed?: Date,
+    duration: { years: number, months: number },
+}
+let skillSummary: SkillSummary[] = skillCategories.flatMap((category => category.skills.map((skill) => {
+    return {
+        skill: skill,
+        category: category.title,
+        duration: { years: 0, months: 0 },
+    }
+})))
+skills.reduce((acc, skill) => {
+    acc.filter(summary => summary.skill === skill.skill)
+        .forEach((summary) => {
+            let lastUsed = (skill.endDate)? new Date(skill.endDate) : new Date();
+            summary.lastUsed = (!summary.lastUsed || summary.lastUsed < lastUsed)? lastUsed : summary.lastUsed
+            summary.duration = addDuration(summary.duration, skill.startDate, skill.endDate)
+        })
+    return acc
+}, skillSummary);
+skillSummary.sort((a, b) => new Date(b.lastUsed).getTime() - new Date(a.lastUsed).getTime());
+console.log(JSON.stringify(skillSummary,null,2))
+
 ---
 
 <Layout>
 
-    <div class="text-4xl text-center">{resume.data.tagline}</div>
-    <div class="px-10 text-xl italic">"{resume.data.summary}"</div>
+    <div class="mb-6">
+        <div class="text-4xl text-center">{resume.data.tagline}</div>
+        <div class="px-10 text-xl italic text-center">"{resume.data.summary}"</div>
+    </div>
 
-    <Section title="Engineering Leadership">
-        {resume.data.leadership.map((entry, index) => (
-            <div class="flex flex-row justify-between">
-                <div class="">{entry.title}</div>
-                <div class="">{entry.summary}</div>
-            </div>
-        ))}
-    </Section>
-    <Section title="Technical Experience">
-        {skillCategories.map((category) => (
-            <div class="flex flex-row justify-between">
-                <div class="">{category.title}</div>
-                <div class="flex flex-row gap-1">{
-                    skillSummary
-                        .filter((skill) => skill.category === category.title)
-                        .map((skill) => (
-                            <div class="bg-slate-500 px-2 mt-1 rounded text-background dark:text-background dark:bg-foreground">{skill.skill} <span class="text-xs">({(skill.years > 10)? "10+" : (skill.years >= 5)? "5+" : (skill.years >= 2)? "2+" : "< 2"})</span></div>
-                        ))
-                }
-                </div>
-            </div>
-        ))}
-    </Section>
-    <Section title="Financial Services Experience">
-        {resume.data.business.map((entry, index) => (
-                <div class="flex flex-row justify-between">
-                    <div class="">{entry.title}</div>
-                    <div class="">{entry.summary}</div>
-                </div>
-        ))}
-    </Section>
+    <Accordion variant='shadow' class="w-full mb-6">
+        <AccordionItem title="Engineering Leadership">
+            {resume.data.leadership.map((entry, index) => (
+                    <div class="flex flex-row justify-between">
+                        <div class="">{entry.title}</div>
+                        <div class="">{entry.summary}</div>
+                    </div>
+            ))}
+        </AccordionItem>
+        <AccordionItem title="Financial Services Experience">
+            {resume.data.business.map((entry, index) => (
+                    <div class="flex flex-row justify-between">
+                        <div class="">{entry.title}</div>
+                        <div class="">{entry.summary}</div>
+                    </div>
+            ))}
+        </AccordionItem>
+        <AccordionItem title="Technical Experience">
+            {skillCategories.map((category) => (
+                    <div class="flex flex-row justify-between">
+                        <div class="">{category.title}</div>
+                        <div class="flex flex-row gap-1">{
+                            skillSummary
+                                .filter((skill) => skill.category === category.title)
+                                .map((skill) => (
+                                        <div class="bg-slate-500 px-2 mt-1 rounded text-background dark:text-background dark:bg-foreground print:bg-background print:text-foreground">{skill.skill} <span class="text-xs">{renderSkillDuration(skill.duration.years)}</span></div>
+                                ))
+                        }
+                        </div>
+                    </div>
+            ))}
+        </AccordionItem>
+    </Accordion>
     <div class="break-after-page"></div>
+
     <Section title="Employment History">
         <ul>
             {employmentHistory.map((job) => (
-                <li class=`m-4 shadow py-4 flex flex-col items-center ${job.data.pageBreakBefore? " break-before-page" : ""}  ${job.data.pageBreakAfter? " break-after-page" : ""}` key={job.id}>
-                    <div class="w-full min-h-20 flex flex-row items-center justify-between">
-                        <div class="flex-shrink-0">
-                            <div class=" flex flex-col items-start">
-                                <h2 class="font-semibold text-xl">{job.data.company}</h2>
-                                <h3 class="font-thin text-sm">({job.data.employmentType} - {job.data.employmentRank})</h3>
-                            </div>
-                        </div>
-                        <div class="flex-shrink-0 flex flex-row items-center justify-between gap-4 pl-4">
-                            <div class=" flex flex-col items-end">
-                                <h2 class="font-semibold">{renderDuration(getDuration(job.data.startDate, job.data.endDate))}</h2>
-                                <h3 class="font-thin text-sm">{renderStartEndDates(job.data.startDate, job.data.endDate)}</h3>
-                            </div>
-                        </div>
-                    </div>
-                    <Employment roles={job.data.roles} />
+                <li class=`py-4 flex flex-col items-center ${job.data.pageBreakBefore? " break-before-page" : ""}  ${job.data.pageBreakAfter? " break-after-page" : ""}` key={job.id}>
+                    <Employment employment={job.data} roles={job.data.roles} />
                 </li>
             ))}
         </ul>
     </Section>
 
-    <div class="text-4xl text-center">EDUCATION</div>
-    <div class="px-10 text-xl italic">"{resume.data.educationSummary}"</div>
+    <div class="break-before-page"></div>
+    <Section title="Education">
+        <div class="px-10 text-l italic text-center">"{resume.data.educationSummary}"</div>
+    </Section>
+
+    <Section title="Personal Interests">
+        <div class="px-10 text-xl italic text-center">"{resume.data.personalInterests}"</div>
+    </Section>
 
 </Layout>
+<style>
+    .ac-accordion-item-title summary {
+        margin: 100px;
+    }
+</style>
