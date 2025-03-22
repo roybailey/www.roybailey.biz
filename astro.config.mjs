@@ -9,7 +9,7 @@ const ORIGIN_URL = process.env.VITE_ORIGIN || 'https://www.odinium.com';
 
 // https://astro.build/config
 export default defineConfig({
-    site: ORIGIN_URL,
+	site: ORIGIN_URL,
     trailingSlash: 'ignore',
     vite: {
         plugins: [
@@ -21,4 +21,9 @@ export default defineConfig({
         react(),
         mdx(),
     ],
+	experimental: {
+		svg: {
+			mode: "sprite",
+		},
+	},
 });

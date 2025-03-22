@@ -1,26 +1,10 @@
 import { defineCollection, z } from 'astro:content';
-import {file, glob} from 'astro/loaders';
+import { file, glob } from 'astro/loaders';
+import { resumeSchema } from 'src/data/resume/resume.ts';
 
 const resumes = defineCollection({
 	loader: glob({pattern:"*.mdx", base: "src/data/resume"}),
-	schema: z.object({
-		lastUpdated: z.string(),
-		name: z.string(),
-		tagline: z.string(),
-		summary: z.string(),
-		phone: z.string(),
-		email: z.string(),
-		leadership: z.array(z.object({
-			title: z.string(),
-			summary: z.string(),
-		})),
-		business: z.array(z.object({
-			title: z.string(),
-			summary: z.string(),
-		})),
-		educationSummary: z.string(),
-		personalInterests: z.string(),
-	})
+	schema: resumeSchema
 });
 
 const employmentHistory = defineCollection({

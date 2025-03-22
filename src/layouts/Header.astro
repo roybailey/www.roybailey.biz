@@ -1,13 +1,13 @@
 ---
 import { getEntry } from 'astro:content';
-import Logo from "@/components/ProfileImage.astro";
 import ThemeSelect from "@/layouts/ThemeSelect.astro";
 import PrintSelect from "@/layouts/PrintSelect.astro";
+import ExpanderSelect from "@/layouts/ExpanderSelect.astro";
 const cv = await getEntry('resumes','roybailey');
 ---
 
 <header class="w-full z-40 sticky print:static top-0 left-0 bg-background shadow-primary dark:shadow-white shadow-b-2 mb-4 px-4 border-b">
-	<div class="min-h-20 flex flex-row items-center justify-between">
+	<div class="min-h-20 flex sm:flex-row flex-col items-center justify-between">
 
 		<div class="flex-shrink-0">
 			<div class="flex flex-col sm:flex-row items-center justify-center text-center h-screen-half">
@@ -28,13 +28,15 @@ const cv = await getEntry('resumes','roybailey');
 		<div class="flex-1 flex items-end px-8 hidden lg:inline">
 			<!-- nothing in center of header -->
 		</div>
-		<div class="flex-shrink-0 flex flex-row items-center justify-between gap-4 pl-4">
-			<div class="flex gap-4 flex-col items-end">
-				<div class="flex flex-row items-center italic font-thin">(last updated {cv.data.lastUpdated})</div>
+		<div class="flex-shrink-0 flex flex-col sm:flex-row items-center sm:items-start justify-between pl-4 mb-4">
+			<div class="flex flex-row items-center italic font-thin">(last updated {cv.data.lastUpdated})</div>
+			<div class="flex flex-row sm:flex-col gap-1 items-end">
 				<div class="print:hidden"><ThemeSelect /></div>
+				<div class="print:hidden"><ExpanderSelect /></div>
 				<div class="print:hidden"><PrintSelect /></div>
-				<div class="hidden print:inline">{cv.data.phone}</div>
-				<div class="hidden print:inline">{cv.data.email}</div>
+				<div class="hidden print:inline">&nbsp;</div>
+				<div class="hidden print:inline">&nbsp;</div>
+				<div class="hidden print:inline">&nbsp;</div>
 			</div>
 		</div>
 

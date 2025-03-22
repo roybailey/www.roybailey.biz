@@ -4,8 +4,16 @@ import Section from "@/components/Section.astro";
 import Employment from "@/components/Employment.astro";
 
 import { getCollection, getEntry } from 'astro:content';
-import Experience from "../components/Experience.astro";
-import {Accordion, AccordionItem} from "free-astro-components";
+import {
+    type SkillSummary
+} from "../data/resume/resume";
+
+import {
+    Accordion,
+    AccordionItem,
+    AccordionTrigger,
+    AccordionContent
+} from "@/components/starwind/accordion";
 
 // ------------------------------------------------------------
 // Date and render functions
@@ -54,50 +62,6 @@ function renderSkillDuration(years): string {
 
 
 // ------------------------------------------------------------
-// Skill Categories
-// ------------------------------------------------------------
-console.log("==========================================")
-console.log("----- Skill Categories")
-const skillCategories = [
-    {
-        title: "Front End",
-        skills: ["javascript,typescript,react,astro"],
-    },
-    {
-        title: "Server Side",
-        skills: ["springboot,java,kotlin,low-latency,restful"],
-    },
-    {
-        title: "Databases",
-        skills: ["postgres,neo4j,oracle,cassandra,redis"],
-    },
-    {
-        title: "Cloud/DevOps",
-        skills: ["kubernetes,aks,aws,docker,ci/cd,azure"],
-    },
-    {
-        title: "Messaging",
-        skills: ["jms,kafka"],
-    },
-    {
-        title: "Testing",
-        skills: ["playwright"],
-    },
-]
-skillCategories.forEach(category => {
-    let listSkills:string[] = []
-    category.skills.map(skill =>
-        skill.split(',')
-            .map(categorySkill => categorySkill.trim().toLowerCase())
-            .forEach(skill => listSkills.push(skill))
-    )
-    category.skills = listSkills
-})
-console.log(JSON.stringify(skillCategories,null,2))
-
-
-
-// ------------------------------------------------------------
 // Resume loading
 // ------------------------------------------------------------
 console.log("==========================================")
@@ -117,6 +81,25 @@ employmentHistory.forEach(job => {
         role.period = renderStartEndDates(role.startDate, role.endDate)
     })
 })
+
+
+
+// ------------------------------------------------------------
+// Skill Categories
+// ------------------------------------------------------------
+console.log("==========================================")
+console.log("----- Skill Categories")
+const skillCategories = resume.data.technical;
+skillCategories.forEach(category => {
+    let listSkills:string[] = []
+    category.skills.map(skill =>
+        skill.split(',')
+            .map(categorySkill => categorySkill.trim().toLowerCase())
+            .forEach(skill => listSkills.push(skill))
+    )
+    category.skills = listSkills
+})
+console.log(JSON.stringify(skillCategories,null,2))
 
 
 
@@ -176,12 +159,6 @@ console.log("----- Resume Skills Summary")
 //     }, { years: 0, months: 0 });
 // console.log(JSON.stringify(springboot,null,2))
 console.log("==========================================")
-interface SkillSummary {
-    skill: string,
-    category: string,
-    lastUsed?: Date,
-    duration: { years: number, months: number },
-}
 let skillSummary: SkillSummary[] = skillCategories.flatMap((category => category.skills.map((skill) => {
     return {
         skill: skill,
@@ -210,37 +187,47 @@ console.log(JSON.stringify(skillSummary,null,2))
         <div class="px-10 text-xl italic text-center">"{resume.data.summary}"</div>
     </div>
 
-    <Accordion variant='shadow' class="w-full mb-6">
-        <AccordionItem title="Engineering Leadership">
-            {resume.data.leadership.map((entry, index) => (
-                    <div class="flex flex-row justify-between">
-                        <div class="">{entry.title}</div>
-                        <div class="">{entry.summary}</div>
-                    </div>
-            ))}
-        </AccordionItem>
-        <AccordionItem title="Financial Services Experience">
-            {resume.data.business.map((entry, index) => (
-                    <div class="flex flex-row justify-between">
-                        <div class="">{entry.title}</div>
-                        <div class="">{entry.summary}</div>
-                    </div>
-            ))}
-        </AccordionItem>
-        <AccordionItem title="Technical Experience">
-            {skillCategories.map((category) => (
-                    <div class="flex flex-row justify-between">
-                        <div class="">{category.title}</div>
-                        <div class="flex flex-row gap-1">{
-                            skillSummary
-                                .filter((skill) => skill.category === category.title)
-                                .map((skill) => (
-                                        <div class="bg-slate-500 px-2 mt-1 rounded text-background dark:text-background dark:bg-foreground print:bg-background print:text-foreground">{skill.skill} <span class="text-xs">{renderSkillDuration(skill.duration.years)}</span></div>
-                                ))
-                        }
+
+    <Accordion type='multiple' class="w-full mb-6 border-gray-200 rounded-lg shadow-lg print:shadow-none">
+        <AccordionItem value="leadership" class="border-b-1 border-gray-100">
+            <AccordionTrigger>Engineering Leadership</AccordionTrigger>
+            <AccordionContent>
+                {resume.data.leadership.map((entry, index) => (
+                        <div class="flex flex-col sm:flex-row justify-between">
+                            <div class="underline sm:no-underline">{entry.title}</div>
+                            <div class="">{entry.summary}</div>
                         </div>
-                    </div>
-            ))}
+                ))}
+            </AccordionContent>
+        </AccordionItem>
+        <AccordionItem value="financial" class="border-b-1 border-gray-100">
+            <AccordionTrigger>Financial Services Experience</AccordionTrigger>
+            <AccordionContent>
+                {resume.data.business.map((entry, index) => (
+                        <div class="flex flex-col sm:flex-row justify-between">
+                            <div class="underline sm:no-underline">{entry.title}</div>
+                            <div class="">{entry.summary}</div>
+                        </div>
+                ))}
+            </AccordionContent>
+        </AccordionItem>
+        <AccordionItem value="technical" class="border-b-1 border-gray-100">
+            <AccordionTrigger>Technical Experience</AccordionTrigger>
+            <AccordionContent>
+                {skillCategories.map((category) => (
+                        <div class="flex  flex-col sm:flex-row justify-between">
+                            <div class="underline sm:no-underline">{category.title}</div>
+                            <div class="flex flex-row flex-wrap gap-1">{
+                                skillSummary
+                                    .filter((skill) => skill.category === category.title)
+                                    .map((skill) => (
+                                            <div class="bg-slate-500 px-2 mt-1 rounded text-background dark:text-background dark:bg-foreground print:bg-background print:text-foreground print:border-1">{skill.skill}</div>
+                                    ))
+                            }
+                            </div>
+                        </div>
+                ))}
+            </AccordionContent>
         </AccordionItem>
     </Accordion>
     <div class="break-after-page"></div>
@@ -248,9 +235,9 @@ console.log(JSON.stringify(skillSummary,null,2))
     <Section title="Employment History">
         <ul>
             {employmentHistory.map((job) => (
-                <li class=`py-4 flex flex-col items-center ${job.data.pageBreakBefore? " break-before-page" : ""}  ${job.data.pageBreakAfter? " break-after-page" : ""}` key={job.id}>
-                    <Employment employment={job.data} roles={job.data.roles} />
-                </li>
+                    <li class=`py-4 flex flex-col items-center ${job.data.pageBreakBefore? " break-before-page" : ""}  ${job.data.pageBreakAfter? " break-after-page" : ""}` key={job.id}>
+                        <Employment employment={job.data} roles={job.data.roles} />
+                    </li>
             ))}
         </ul>
     </Section>
@@ -265,8 +252,3 @@ console.log(JSON.stringify(skillSummary,null,2))
     </Section>
 
 </Layout>
-<style>
-    .ac-accordion-item-title summary {
-        margin: 100px;
-    }
-</style>

@@ -1,12 +1,20 @@
 ---
-import { Accordion, AccordionItem } from 'free-astro-components'
+import {
+    Accordion,
+    AccordionContent,
+    AccordionItem,
+    AccordionTrigger,
+} from "@/components/ui/accordion"
 // Access passed-in component props, like `<X title="Hello, World" />`
 const { title } = Astro.props;
 ---
 
-<Accordion variant='shadow' class="w-full">
-    <AccordionItem title={title}>
-        <slot/>
+<Accordion type="single" collapsible variant='shadow' class="w-full">
+    <AccordionItem value="item-1">
+        <AccordionTrigger>{title}</AccordionTrigger>
+        <AccordionContent>
+            <slot/>
+        </AccordionContent>
     </AccordionItem>
 </Accordion>
 
