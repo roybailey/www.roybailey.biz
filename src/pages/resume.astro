@@ -15,15 +15,21 @@ import {
     renderPeriod, getDuration, addDuration,
 } from "../data/resume/resume";
 
+const DEBUG = false
+function LOG(message:string) {
+    if (DEBUG)
+        console.log(message)
+}
+
 // ------------------------------------------------------------
 // Resume loading
 // ------------------------------------------------------------
-console.log("==========================================")
-console.log("----- Resume Loading")
+LOG("==========================================")
+LOG("----- Resume Loading")
 
 const resume:Resume = (await getEntry('resumes', 'roybailey')).data as Resume
-console.log(JSON.stringify(resume,null,2))
-console.log("-----\n\n\n\n\n")
+LOG(JSON.stringify(resume,null,2))
+LOG("-----\n\n\n\n\n")
 
 const employmentHistory: Employment[] = (await getCollection('employmentHistory')).map(it=>it.data) as Employment[];
 // sort history into newest first
@@ -43,16 +49,16 @@ employmentHistory.forEach(employment => {
     employment.duration = getDuration(employment.period)
 })
 employmentHistory.sort((a, b) => new Date(b.period.fromDate).getTime() - new Date(a.period.fromDate).getTime());
-console.log(JSON.stringify(employmentHistory,null,2))
-console.log("-----\n\n\n\n\n")
+LOG(JSON.stringify(employmentHistory,null,2))
+LOG("-----\n\n\n\n\n")
 
 
 
 // ------------------------------------------------------------
 // Skill Categories
 // ------------------------------------------------------------
-console.log("==========================================")
-console.log("----- Skill Categories")
+LOG("==========================================")
+LOG("----- Skill Categories")
 const skillCategories = resume.technical;
 skillCategories.forEach(category => {
     let listSkills:string[] = []
@@ -63,16 +69,16 @@ skillCategories.forEach(category => {
     )
     category.skills = listSkills
 })
-console.log(JSON.stringify(skillCategories,null,2))
-console.log("-----\n\n\n\n\n")
+LOG(JSON.stringify(skillCategories,null,2))
+LOG("-----\n\n\n\n\n")
 
 
 
 // ------------------------------------------------------------
 // Resume Skills History
 // ------------------------------------------------------------
-console.log("==========================================")
-console.log("----- Resume Skills History")
+LOG("==========================================")
+LOG("----- Resume Skills History")
 const skills: SkillExperience[] = []
 employmentHistory?.forEach((employment)=> {
     employment.roles.forEach(role => {
@@ -97,22 +103,22 @@ employmentHistory?.forEach((employment)=> {
     })
 })
 skills.sort((a, b) => new Date(b.period.fromDate).getTime() - new Date(a.period.fromDate).getTime());
-console.log(JSON.stringify(skills,null,2))
-console.log("-----\n\n\n\n\n")
+LOG(JSON.stringify(skills,null,2))
+LOG("-----\n\n\n\n\n")
 
 
 // ------------------------------------------------------------
 // Resume Skills Summary
 // ------------------------------------------------------------
-console.log("==========================================")
-console.log("----- Resume Skills Summary")
+LOG("==========================================")
+LOG("----- Resume Skills Summary")
 // let springboot = skills
 //     .filter(skill=> skill.skill === "springboot")
 //     .reduce((acc, skill) => {
 //         return addDuration(acc, skill.fromDate, skill.uptoDate)
 //     }, { years: 0, months: 0 });
-// console.log(JSON.stringify(springboot,null,2))
-console.log("==========================================")
+// LOG(JSON.stringify(springboot,null,2))
+LOG("==========================================")
 let skillSummary: SkillSummary[] = skillCategories.flatMap((category => category.skills.map((skill) => {
     return {
         skill: skill,
@@ -130,8 +136,8 @@ skills.reduce((acc, skill) => {
     return acc
 }, skillSummary);
 skillSummary.sort((a, b) => new Date(b.lastUsed).getTime() - new Date(a.lastUsed).getTime());
-console.log(JSON.stringify(skillSummary,null,2))
-console.log("-----\n\n\n\n\n")
+LOG(JSON.stringify(skillSummary,null,2))
+LOG("-----\n\n\n\n\n")
 
 ---
 
@@ -172,11 +178,11 @@ console.log("-----\n\n\n\n\n")
     function openRecent() {
         document.querySelectorAll('[data-state="closed"] button.starwind-accordion-trigger')
             .forEach((trigger, index) => {
-                console.log(`found ${trigger.id}`);
+                // console.log(`found ${trigger.id}`);
                 let age = trigger.attributes.getNamedItem("age")
-                console.log(`age= ${age}`);
+                // console.log(`age= ${age}`);
                 if(parseInt(age?.value.toString() || "99") < 5) {
-                    console.log(`opening recent age: ${age}`);
+                    // console.log(`opening recent age: ${age}`);
                     trigger.click(); // Simulates user clicking to open the accordion
                 }
             });

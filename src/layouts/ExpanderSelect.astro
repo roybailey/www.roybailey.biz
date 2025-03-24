@@ -17,13 +17,13 @@ import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/starwind/t
 </Tooltip>
 <script>
     document.getElementById('expander-selector')?.addEventListener('click', () => {
-        console.log("searching for accordion items to open...");
+        // console.log("searching for accordion items to open...");
         // document.querySelectorAll('button[data-state="closed"]').forEach((trigger, index) => {
         //     console.log(`found ${trigger.id}`);
         //     trigger.click(); // Simulates user clicking to open the accordion
         // });
         document.querySelectorAll('[data-state="closed"] button.starwind-accordion-trigger').forEach((trigger, index) => {
-            console.log(`found ${trigger.id}`);
+            // console.log(`found ${trigger.id}`);
             trigger.click(); // Simulates user clicking to open the accordion
         });
     });
