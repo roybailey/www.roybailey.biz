@@ -1,42 +1,56 @@
 ---
 import {
     Accordion,
-    AccordionContent,
     AccordionItem,
     AccordionTrigger,
-} from "@/components/ui/accordion"
+    AccordionContent
+} from "@/components/starwind/accordion";
+import Section from "./Section.astro";
+
 // Access passed-in component props, like `<X title="Hello, World" />`
-const { title } = Astro.props;
+const { leadership, business, skillCategories, skillSummary } = Astro.props;
 ---
 
-<Accordion type="single" collapsible variant='shadow' class="w-full">
-    <AccordionItem value="item-1">
-        <AccordionTrigger>{title}</AccordionTrigger>
+<Accordion type='multiple' class="w-full mb-6 border-gray-200 rounded-lg shadow-lg print:shadow-none">
+    <AccordionItem value="leadership" class="border-b-1 border-gray-100">
+        <AccordionTrigger age="0">Engineering Leadership</AccordionTrigger>
         <AccordionContent>
-            <slot/>
+            {leadership.map((entry, index) => (
+                    <div class="flex flex-col sm:flex-row justify-between">
+                        <div class="underline sm:no-underline font-thin">{entry.title}</div>
+                        <div class="">{entry.summary}</div>
+                    </div>
+            ))}
+        </AccordionContent>
+    </AccordionItem>
+    <AccordionItem value="financial" class="border-b-1 border-gray-100">
+        <AccordionTrigger age="0">Financial Services Experience</AccordionTrigger>
+        <AccordionContent>
+            {business.map((entry, index) => (
+                    <div class="flex flex-col sm:flex-row justify-between">
+                        <div class="underline sm:no-underline font-thin">{entry.title}</div>
+                        <div class="">{entry.summary}</div>
+                    </div>
+            ))}
+        </AccordionContent>
+    </AccordionItem>
+    <AccordionItem value="technical" class="border-b-1 border-gray-100">
+        <AccordionTrigger age="0">Technical Experience</AccordionTrigger>
+        <AccordionContent>
+            {skillCategories.map((category) => (
+                    <div class="flex  flex-col sm:flex-row justify-between">
+                        <div class="underline sm:no-underline font-thin">{category.title}</div>
+                        <div class="flex flex-row flex-wrap gap-1">{
+                            skillSummary
+                                .filter((skill) => skill.category === category.title)
+                                .map((skill) => (
+                                        <div class="bg-slate-500 px-2 mt-1 rounded text-background dark:text-background dark:bg-foreground print:bg-background print:text-foreground print:border-1">{skill.skill}</div>
+                                ))
+                        }
+                        </div>
+                    </div>
+            ))}
         </AccordionContent>
     </AccordionItem>
 </Accordion>
 
-
-<script>
-    function updateAttributes() {
-        const print = window.matchMedia("print").matches
-        console.log(`print=${print}`)
-        const elements = document.getElementsByTagName("details");
-        for(const element of elements) {
-            console.log(`assigning open=${print}`)
-            if(print) {
-                element.setAttribute("open", "");
-            } else {
-                element.removeAttribute("open");
-            }
-        }
-    }
-
-    // Listen for changes in media type
-    window.matchMedia("print").addEventListener("change", updateAttributes);
-
-    // Set on page load
-    updateAttributes();
-</script>
