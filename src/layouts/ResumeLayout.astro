@@ -2,12 +2,46 @@
 import Layout from '@/layouts/Layout.astro'
 import Header from '@/layouts/Header.astro'
 import Footer from '@/layouts/Footer.astro'
+import {SEO} from "astro-seo";
 ---
 
 <!doctype html>
 <html lang="en">
 	<head>
 		<title>Roy Bailey - Resume</title>
+		<SEO
+			title="Software Engineer | Software Architect | Software Engineering Manager  | Kotlin, Neo4j, React, AstroJS Developer"
+			description="Experienced Software Engineer & Architect specializing in Kotlin, Neo4j, React, and AstroJS. Passionate about building scalable backends and high-performance front-end applications. Available for consulting, software development, and technical leadership."
+			openGraph={{
+				basic: {
+					title: "Roy Bailey Software Engineering Career",
+					description: "Learn more about my experience, skills, and professional journey.",
+					type: "profile",
+					url: "https://roybailey.biz",
+					image: "https://roybailey.biz/img/rb-profile-2021.png",
+				}
+			}}
+			twitter={{
+				creator: "@roybaileybiz"
+			}}
+			extend={{
+				// extending the default link tags
+		        link: [{ rel: "icon", href: "/favicon.ico" }],
+				// extending the default meta tags
+				meta: [
+					{
+						name: "twitter:image",
+						content: "https://roybailey.biz/img/rb-profile-2021.png",
+					},
+					{ name: "twitter:title", content: "Roy Bailey" },
+					{ name: "twitter:description", content: "Software Engineer and Software Engineering Manager" },
+				],
+			}}
+		/>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/x-icon" href="/favicon.ico" />
+		<title>Roy Bailey</title>
 	</head>
 </html>
 
