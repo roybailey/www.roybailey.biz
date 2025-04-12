@@ -5,7 +5,7 @@ import tailwindcss from "@tailwindcss/vite";
 import react from "@astrojs/react";
 import sitemap from "@astrojs/sitemap";
 
-const ORIGIN_URL = process.env.VITE_ORIGIN || 'https://www.odinium.com';
+const ORIGIN_URL = process.env.VITE_ORIGIN || 'https://www.roybailey.biz';
 
 // https://astro.build/config
 export default defineConfig({
